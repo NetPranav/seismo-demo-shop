@@ -1,4 +1,15 @@
 {
   "version": 1,
-  "rules": []
+  "rules": [
+    {
+      "id": "a-pd260e",
+      "kind": "alias",
+      "endpoint": "GET /users/{id}",
+      "path": "$",
+      "target": "name",
+      "source": "display_name",
+      "driftEvent": "drift-pd260e",
+      "addedAt": "2026-10-11"
+    }
+  ]
 }
