@@ -18,3 +18,12 @@ describe('invoice', () => {
   });
   it('v1 with the alias rule: unchanged (old field wins)', () => expect(applyAliases(v1, [rule], 'GET /users/{id}')).toBe(v1));
 });
+
+import { applyTransforms } from '@seismo/sdk/runtime';
+describe('reviewed unit fix (scale rule)', () => {
+  it('paise -> rupees only with the merged scale rule', () => {
+    const v2 = { ...payment, amount: 49900 };
+    expect(invoiceLines(v1, applyTransforms(v2, [], 'GET /payments/{id}')).amount).toBe('₹49,900');
+    expect(invoiceLines(v1, applyTransforms(v2, [{ kind: 'scale', endpoint: 'GET /payments/{id}', field: 'amount', divideBy: 100 }], 'GET /payments/{id}')).amount).toBe('₹499');
+  });
+});

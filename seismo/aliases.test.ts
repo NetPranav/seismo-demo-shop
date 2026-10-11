@@ -7,13 +7,13 @@ const rules = (file as { rules: AliasRule[] }).rules;
 
 describe('seismo/aliases.json', () => {
   it('is valid', () => {
-    for (const r of rules) {
+    for (const r of rules.filter((x) => (x as { kind?: string }).kind !== 'scale')) {
       expect(r.target).toMatch(/^[A-Za-z_][A-Za-z0-9_]{0,63}$/);
       expect(r.source).toMatch(/^[A-Za-z_][A-Za-z0-9_]{0,63}$/);
       expect(r.target).not.toBe(r.source);
     }
   });
-  for (const r of rules) {
+  for (const r of rules.filter((x) => (x as { kind?: string }).kind !== 'scale')) {
     it(`${r.endpoint} ${r.target} <- ${r.source}: old shape untouched (G1), new shape only gains ${r.target} (G2)`, () => {
       const oldShape = { [r.target]: 'old', [r.source]: 'new', other: 1 };
       expect(applyAliases(oldShape, [r], r.endpoint)).toBe(oldShape);

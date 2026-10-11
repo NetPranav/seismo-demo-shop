@@ -24,4 +24,4 @@ npm test                    # invoice + alias guarantees
 - `seismo/aliases.test.ts` re-checks guarantees G1/G2 for every rule in this repo's CI.
 - `seismo.config.json` maps env vars to provider names; `seismo.workflows.yml` groups files into user workflows.
 
-The SDK is vendored as `vendor/seismo-sdk-0.1.1.tgz` (built from `Hackwave3.0/sdk-node`) until it is published to npm.
+The SDK is vendored as `vendor/seismo-sdk-0.1.2.tgz` (built from `Hackwave3.0/sdk-node`) until it is published to npm.
