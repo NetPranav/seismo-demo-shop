@@ -10,6 +10,16 @@
       "addedAt": "2026-10-11",
       "kind": "coerce",
       "to": "number"
+    },
+    {
+      "id": "a-ab69g7",
+      "kind": "alias",
+      "endpoint": "GET /users/{id}",
+      "path": "$",
+      "target": "name",
+      "source": "customer_name",
+      "driftEvent": "drift-ab69g7",
+      "addedAt": "2026-10-11"
     }
   ]
 }
