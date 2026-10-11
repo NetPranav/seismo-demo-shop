@@ -78,7 +78,7 @@ export default function DemoPanel() {
             {detected === null ? (
               <p className="demo-hint">Not connected to Seismo (SEISMO_KEY / SEISMO_ENDPOINT).</p>
             ) : detected.length === 0 ? (
-              <p className="demo-hint">{active ? 'Watching… (about a minute after a change)' : 'Nothing changed.'}</p>
+              <p className="demo-hint">{active ? 'Watching… (about a minute after a change)' : 'Nothing open: all providers look normal.'}</p>
             ) : (
               <ul className="demo-found">
                 {detected.slice(0, 5).map((d) => (
@@ -91,7 +91,7 @@ export default function DemoPanel() {
             )}
           </div>
           <div className="demo-foot">
-            <button className="demo-link" disabled={busy} onClick={reset}>Reset all to normal</button>
+            <button className="demo-link" disabled={busy} onClick={reset} title="Providers back to normal. Seismo marks the changes resolved ~15 s later. Full reset (fix rules too): Seismo → Demo Control">Turn all changes off</button>
             <a className="demo-link" href={`${DASHBOARD}/app`} target="_blank" rel="noreferrer">Open Seismo ↗</a>
           </div>
         </div>
