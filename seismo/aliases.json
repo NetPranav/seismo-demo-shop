@@ -10,6 +10,16 @@
       "addedAt": "2026-10-11",
       "kind": "coerce",
       "to": "number"
+    },
+    {
+      "id": "a-mpprca",
+      "kind": "alias",
+      "endpoint": "GET /users/{id}",
+      "path": "$",
+      "target": "email",
+      "source": "email_address",
+      "driftEvent": "drift-mpprca",
+      "addedAt": "2026-10-11"
     }
   ]
 }
