@@ -1,4 +1,15 @@
 {
   "version": 1,
-  "rules": []
+  "rules": [
+    {
+      "id": "a-psukhx",
+      "kind": "alias",
+      "endpoint": "GET /users/{id}",
+      "path": "$",
+      "target": "name",
+      "source": "display_name",
+      "driftEvent": "drift-psukhx",
+      "addedAt": "2026-10-11"
+    }
+  ]
 }
