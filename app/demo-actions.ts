@@ -40,6 +40,16 @@ export async function detectedChanges(): Promise<Detected[] | null> {
   } catch { return null; }
 }
 
+/** Is Seismo still learning? A change made before an endpoint is ready becomes its normal shape and is never reported. */
+export interface Readiness { service: string; endpoint: string; samples: number; needed: number; ready: boolean }
+export async function readiness(): Promise<Readiness[] | null> {
+  if (!enabled() || !process.env.SEISMO_KEY) return null;
+  try {
+    const r = await fetch(`${process.env.SEISMO_ENDPOINT ?? 'http://localhost:4000'}/v1/sdk/readiness`, { headers: { 'x-seismo-key': process.env.SEISMO_KEY }, cache: 'no-store' });
+    return r.ok ? ((await r.json()) as Readiness[]) : null;
+  } catch { return null; }
+}
+
 /** Custom changes typed into the panel's form (applied by the fake provider to every response). */
 export interface CustomChange { id: string; service: string; kind: string; field: string; to?: string; factor?: number; value?: string; max?: number }
 

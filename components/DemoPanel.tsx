@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { addCustom, detectedChanges, listCustom, listScenarios, removeCustom, resetProviders, setScenario, type CustomChange, type Detected, type Scenario } from '../app/demo-actions';
+import { addCustom, detectedChanges, listCustom, readiness, listScenarios, removeCustom, resetProviders, setScenario, type CustomChange, type Detected, type Readiness, type Scenario } from '../app/demo-actions';
 
 const LABEL: Record<string, string> = {
   'users-rename': 'Rename a field (name → display_name)',
@@ -46,9 +46,11 @@ export default function DemoPanel() {
   const [custom, setCustom] = useState<CustomChange[]>([]);
   const [form, setForm] = useState({ service: 'users', kind: 'rename', field: 'name', input: '' });
   const [formMsg, setFormMsg] = useState('');
+  const [learning, setLearning] = useState<Readiness[]>([]);
 
   const refresh = useCallback(async () => {
-    const [s, d, c] = await Promise.all([listScenarios(), detectedChanges(), listCustom()]);
+    const [s, d, c, r] = await Promise.all([listScenarios(), detectedChanges(), listCustom(), readiness()]);
+    setLearning((r ?? []).filter((x) => !x.ready));
     setScenarios(s.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id)));
     setDetected(d);
     setCustom(c);
@@ -145,6 +147,12 @@ export default function DemoPanel() {
           </div>
           <div className="demo-detect">
             <strong>Seismo detected</strong>
+            {learning.length > 0 && (
+              <p className="demo-hint">
+                Still learning normal traffic, changes now would be learned as normal:{' '}
+                {learning.map((l) => `${l.endpoint} ${l.samples}/${l.needed}`).join(' · ')}
+              </p>
+            )}
             {detected === null ? (
               <p className="demo-hint">Not connected to Seismo (SEISMO_KEY / SEISMO_ENDPOINT).</p>
             ) : detected.length === 0 ? (
