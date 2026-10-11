@@ -1,4 +1,15 @@
 {
   "version": 1,
-  "rules": []
+  "rules": [
+    {
+      "id": "a-xst1kj",
+      "kind": "alias",
+      "endpoint": "GET /users/{id}",
+      "path": "$",
+      "target": "name",
+      "source": "display_name",
+      "driftEvent": "drift-xst1kj",
+      "addedAt": "2026-10-11"
+    }
+  ]
 }
