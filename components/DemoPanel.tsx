@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { detectedChanges, listScenarios, resetProviders, setScenario, type Detected, type Scenario } from '../app/demo-actions';
+import { addCustom, detectedChanges, listCustom, listScenarios, removeCustom, resetProviders, setScenario, type CustomChange, type Detected, type Scenario } from '../app/demo-actions';
 
 const LABEL: Record<string, string> = {
   'users-rename': 'Rename a field (name → display_name)',
@@ -14,6 +14,25 @@ const LABEL: Record<string, string> = {
   'orders-cursor': 'Switch pagination to cursors',
 };
 const ORDER = Object.keys(LABEL);
+
+/** Fields each fake provider sends (suggestions for the form; any field name can be typed). */
+const FIELDS: Record<string, string[]> = {
+  users: ['name', 'email', 'phone', 'id'],
+  payments: ['amount', 'currency', 'status', 'order_id'],
+  shipping: ['status', 'carrier', 'order_id'],
+  orders: ['total_rupees', 'items', 'user_id', 'data'],
+};
+const KINDS = [
+  { id: 'rename', label: 'Rename field', input: 'New name', placeholder: 'full_name' },
+  { id: 'type', label: 'Change type', input: 'New type', placeholder: 'string' },
+  { id: 'scale', label: 'Multiply (units)', input: 'Factor', placeholder: '100' },
+  { id: 'value', label: 'New value', input: 'Value', placeholder: 'lost' },
+  { id: 'remove', label: 'Remove field', input: '', placeholder: '' },
+  { id: 'cap', label: 'Cap a list', input: 'Max items', placeholder: '100' },
+] as const;
+const describeChange = (c: CustomChange) =>
+  c.kind === 'rename' ? `${c.service}: ${c.field} → ${c.to}` : c.kind === 'type' ? `${c.service}: ${c.field} becomes ${c.to}` : c.kind === 'scale' ? `${c.service}: ${c.field} × ${c.factor}`
+  : c.kind === 'value' ? `${c.service}: ${c.field} = "${c.value}"` : c.kind === 'remove' ? `${c.service}: ${c.field} removed` : `${c.service}: ${c.field} capped at ${c.max}`;
 const DASHBOARD = process.env.NEXT_PUBLIC_SEISMO_DASHBOARD_URL ?? 'http://localhost:3000';
 const time = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
@@ -24,11 +43,15 @@ export default function DemoPanel() {
   const [detected, setDetected] = useState<Detected[] | null>(null);
   const [since, setSince] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const [custom, setCustom] = useState<CustomChange[]>([]);
+  const [form, setForm] = useState({ service: 'users', kind: 'rename', field: 'name', input: '' });
+  const [formMsg, setFormMsg] = useState('');
 
   const refresh = useCallback(async () => {
-    const [s, d] = await Promise.all([listScenarios(), detectedChanges()]);
+    const [s, d, c] = await Promise.all([listScenarios(), detectedChanges(), listCustom()]);
     setScenarios(s.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id)));
     setDetected(d);
+    setCustom(c);
   }, []);
   useEffect(() => {
     const first = setTimeout(refresh, 0);
@@ -42,6 +65,26 @@ export default function DemoPanel() {
     await refresh();
     setBusy(false);
   };
+  const submit = async () => {
+    const k = form.kind;
+    const v = form.kind === 'type' ? form.input || 'string' : form.input.trim();
+    const change = { service: form.service, kind: k, field: form.field.trim(),
+      ...(k === 'rename' || k === 'type' ? { to: v } : {}), ...(k === 'scale' ? { factor: Number(v) } : {}),
+      ...(k === 'value' ? { value: v } : {}), ...(k === 'cap' ? { max: Number(v) } : {}) };
+    setBusy(true);
+    const r = await addCustom(change);
+    setFormMsg(r.ok ? `Live now at ${new Date().toLocaleTimeString()}: keep placing orders.` : `Not applied: ${r.message}`);
+    await refresh();
+    setBusy(false);
+  };
+  const drop = async (id: string) => {
+    setBusy(true);
+    await removeCustom(id);
+    await refresh();
+    setBusy(false);
+  };
+  const kindMeta = KINDS.find((x) => x.id === form.kind)!;
+
   const reset = async () => {
     setBusy(true);
     await resetProviders();
@@ -50,7 +93,7 @@ export default function DemoPanel() {
     setBusy(false);
   };
 
-  const active = scenarios.filter((s) => s.enabled).length;
+  const active = scenarios.filter((s) => s.enabled).length + custom.length;
   if (!scenarios.length && !open) return null;   // panel off (DEMO_PANEL not set) or providers down
 
   return (
@@ -73,6 +116,33 @@ export default function DemoPanel() {
               </li>
             ))}
           </ul>
+          <div className="demo-custom">
+            <strong>Or describe your own change</strong>
+            <div className="demo-form">
+              <select value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value, field: FIELDS[e.target.value]![0]! })} aria-label="Provider">
+                {Object.keys(FIELDS).map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <select value={form.kind} onChange={(e) => setForm({ ...form, kind: e.target.value, input: '' })} aria-label="Kind of change">
+                {KINDS.map((k) => <option key={k.id} value={k.id}>{k.label}</option>)}
+              </select>
+              <input list="demo-fields" value={form.field} onChange={(e) => setForm({ ...form, field: e.target.value })} placeholder="field" aria-label="Field" />
+              <datalist id="demo-fields">{FIELDS[form.service]!.map((f) => <option key={f} value={f} />)}</datalist>
+              {kindMeta.input && (
+                form.kind === 'type'
+                  ? <select value={form.input || 'string'} onChange={(e) => setForm({ ...form, input: e.target.value })} aria-label="New type"><option value="string">string</option><option value="number">number</option></select>
+                  : <input value={form.input} onChange={(e) => setForm({ ...form, input: e.target.value })} placeholder={kindMeta.placeholder} aria-label={kindMeta.input} />
+              )}
+              <button className="demo-btn on" disabled={busy || !form.field.trim() || (!!kindMeta.input && form.kind !== 'type' && !form.input.trim())} onClick={() => void submit()}>Apply</button>
+            </div>
+            {formMsg && <div className="demo-since">{formMsg}</div>}
+            {custom.length > 0 && (
+              <ul className="demo-found">
+                {custom.map((c) => (
+                  <li key={c.id}><span className="demo-sev warning">live</span> {describeChange(c)} · <button className="demo-link" onClick={() => drop(c.id)}>undo</button></li>
+                ))}
+              </ul>
+            )}
+          </div>
           <div className="demo-detect">
             <strong>Seismo detected</strong>
             {detected === null ? (

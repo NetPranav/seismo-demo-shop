@@ -66,3 +66,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .demo-sev.warning { color: var(--warn); background: #fbf0dd; }
 .demo-foot { display: flex; justify-content: space-between; margin-top: 12px; }
 .demo-link { background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-size: 13px; }
+
+.demo-custom { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.demo-form { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+.demo-form select, .demo-form input { font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); min-width: 0; }
+.demo-form .demo-btn { grid-column: 1 / -1; justify-content: center; }

@@ -2,7 +2,8 @@
 import { applyAliases, applyTransforms, type AliasRule } from '@seismo/sdk/runtime';
 import file from '../../seismo/aliases.json';
 
-const rules = (file as { rules: AliasRule[] }).rules;
+// any rule kind (alias, scale, coerce, map): applyAliases uses the aliases, applyTransforms the rest
+const rules = (file as { rules: unknown[] }).rules as AliasRule[];
 
 /**
  * Alias rules add a renamed field back under its old name (never change or remove anything); scale rules, which a human
