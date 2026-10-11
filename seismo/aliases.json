@@ -10,6 +10,16 @@
       "addedAt": "2026-10-11",
       "kind": "coerce",
       "to": "number"
+    },
+    {
+      "id": "a-y4nfq6",
+      "kind": "alias",
+      "endpoint": "GET /users/{id}",
+      "path": "$",
+      "target": "name",
+      "source": "Unique_User",
+      "driftEvent": "drift-y4nfq6",
+      "addedAt": "2026-10-11"
     }
   ]
 }
