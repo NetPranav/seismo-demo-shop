@@ -1,4 +1,15 @@
 {
   "version": 1,
-  "rules": []
+  "rules": [
+    {
+      "id": "f-chussq",
+      "endpoint": "POST /payments",
+      "path": "$",
+      "field": "amount",
+      "driftEvent": "drift-chussq",
+      "addedAt": "2026-10-11",
+      "kind": "coerce",
+      "to": "number"
+    }
+  ]
 }
