@@ -10,6 +10,16 @@
       "source": "display_name",
       "driftEvent": "drift-pd260e",
       "addedAt": "2026-10-11"
+    },
+    {
+      "id": "s-46u7cc",
+      "kind": "scale",
+      "endpoint": "POST /payments",
+      "path": "$",
+      "field": "amount",
+      "divideBy": 100,
+      "driftEvent": "drift-46u7cc",
+      "addedAt": "2026-10-11"
     }
   ]
 }
