@@ -3,7 +3,8 @@
 import { applyAliases, applyTransforms, type AliasRule } from '@seismo/sdk/runtime';
 import file from './aliases.json';
 
-const rules = (file as { rules: AliasRule[] }).rules;
+// any rule kind (alias, scale, coerce, map): applyAliases uses the aliases, applyTransforms the rest
+const rules = (file as { rules: unknown[] }).rules as AliasRule[];
 
 /** Parsed JSON body of a provider response: alias rules (add-only), then reviewed scale rules if any. */
 export const withAliases = <T>(body: T, endpoint: string): T => applyTransforms(applyAliases(body, rules, endpoint), rules, endpoint);

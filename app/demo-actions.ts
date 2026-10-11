@@ -39,3 +39,28 @@ export async function detectedChanges(): Promise<Detected[] | null> {
     return r.ok ? ((await r.json()) as Detected[]) : null;
   } catch { return null; }
 }
+
+/** Custom changes typed into the panel's form (applied by the fake provider to every response). */
+export interface CustomChange { id: string; service: string; kind: string; field: string; to?: string; factor?: number; value?: string; max?: number }
+
+export async function listCustom(): Promise<CustomChange[]> {
+  if (!enabled()) return [];
+  try {
+    const r = await fetch(`${providers()}/admin/custom`, { headers: admin(), cache: 'no-store' });
+    return r.ok ? ((await r.json()) as CustomChange[]) : [];
+  } catch { return []; }
+}
+
+export async function addCustom(c: Omit<CustomChange, 'id'>): Promise<{ ok: boolean; message?: string }> {
+  if (!enabled()) return { ok: false, message: 'demo panel is off' };
+  try {
+    const r = await fetch(`${providers()}/admin/custom`, { method: 'POST', headers: admin(), body: JSON.stringify(c), cache: 'no-store' });
+    if (r.ok) return { ok: true };
+    return { ok: false, message: ((await r.json().catch(() => ({}))) as { message?: string }).message ?? `error ${r.status}` };
+  } catch { return { ok: false, message: 'providers unreachable' }; }
+}
+
+export async function removeCustom(id: string): Promise<void> {
+  if (!enabled() || !/^[a-z0-9]+$/.test(id)) return;
+  await fetch(`${providers()}/admin/custom/${id}`, { method: 'DELETE', headers: admin(), cache: 'no-store' }).catch(() => undefined);
+}
