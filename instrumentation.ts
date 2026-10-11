@@ -8,6 +8,8 @@ export async function register() {
     endpoint: process.env.SEISMO_ENDPOINT,
     sampleRate: Number(process.env.SEISMO_SAMPLE_RATE ?? 1),
     enumAllowList: ['status', 'currency'],
+    // only the four providers (not Next.js's own calls, e.g. its update check to the npm registry)
+    allowHosts: [...new Set(['USERS_API_URL', 'PAYMENTS_API_URL', 'SHIPPING_API_URL', 'ORDERS_API_URL'].map((k) => base(k)).filter(Boolean).map((u) => new URL(u).host))],
     services: {
       [`${base('USERS_API_URL')}/users`]: 'users',
       [`${base('PAYMENTS_API_URL')}/payments`]: 'payments',
