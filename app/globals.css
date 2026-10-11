@@ -43,3 +43,26 @@ th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--lin
 th { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .note { margin-top: 24px; color: var(--muted); font-size: 13px; }
+
+/* Demo panel (bottom-right) */
+.demo { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.demo-fab { background: var(--ink); color: #fff; border: 0; border-radius: 999px; padding: 10px 16px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+.demo-fab:hover { background: var(--accent); }
+.demo-card { width: min(380px, calc(100vw - 32px)); max-height: 75vh; overflow: auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; box-shadow: 0 12px 32px rgba(0,0,0,.16); }
+.demo-head { display: flex; justify-content: space-between; align-items: center; }
+.demo-x { border: 0; background: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+.demo-hint { color: var(--muted); font-size: 13px; margin: 6px 0 10px; }
+.demo-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.demo-btn { width: 100%; display: flex; justify-content: space-between; gap: 8px; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 10px; cursor: pointer; font-size: 14px; }
+.demo-btn.on { border-color: var(--accent); background: #fff1eb; }
+.demo-btn:disabled { opacity: .6; }
+.demo-state { font-size: 12px; font-weight: 700; color: var(--muted); }
+.demo-btn.on .demo-state { color: var(--accent); }
+.demo-since { font-size: 12px; color: var(--muted); padding: 2px 4px 0; }
+.demo-detect { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.demo-found { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; font-size: 13px; }
+.demo-sev { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 999px; background: var(--bg); }
+.demo-sev.breaking { color: #fff; background: var(--accent); }
+.demo-sev.warning { color: var(--warn); background: #fbf0dd; }
+.demo-foot { display: flex; justify-content: space-between; margin-top: 12px; }
+.demo-link { background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-size: 13px; }
