@@ -10,16 +10,6 @@
       "addedAt": "2026-10-11",
       "kind": "coerce",
       "to": "number"
-    },
-    {
-      "id": "a-q41ces",
-      "kind": "alias",
-      "endpoint": "GET /users/{id}",
-      "path": "$",
-      "target": "name",
-      "source": "fullName",
-      "driftEvent": "drift-q41ces",
-      "addedAt": "2026-10-12"
     }
   ]
 }
