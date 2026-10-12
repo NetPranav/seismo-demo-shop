@@ -10,16 +10,6 @@
       "addedAt": "2026-10-11",
       "kind": "coerce",
       "to": "number"
-    },
-    {
-      "id": "a-n9cyh2",
-      "kind": "alias",
-      "endpoint": "GET /users/{id}",
-      "path": "$",
-      "target": "name",
-      "source": "adrszh",
-      "driftEvent": "drift-n9cyh2",
-      "addedAt": "2026-10-11"
     }
   ]
 }
