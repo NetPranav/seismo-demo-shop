@@ -20,6 +20,16 @@
       "source": "hello",
       "driftEvent": "drift-lo10f4",
       "addedAt": "2026-10-12"
+    },
+    {
+      "id": "s-xqmugp",
+      "endpoint": "GET /payments/{id}",
+      "path": "$",
+      "field": "amount",
+      "driftEvent": "drift-xqmugp",
+      "addedAt": "2026-10-12",
+      "kind": "scale",
+      "divideBy": 100
     }
   ]
 }
